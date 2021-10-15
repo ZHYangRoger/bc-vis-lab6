@@ -1,3 +1,6 @@
+import AreaChart from './AreaChart.js';
+import StackedAreaChart from './StackedAreaChart.js';
+
 let data;
 
 async function loadData(url){
@@ -10,6 +13,7 @@ async function main(){
     data = await loadData(url);
 
     //compute total
+    let total_arr = [];
     data.forEach(function callbackFn(element, index){
         let total = 0;
         for (const [key, value] of Object.entries(element)) {
@@ -17,12 +21,18 @@ async function main(){
             total += value;
         }
         element.total = total;
+        total_arr.push(total);
     });
 
-    //reusable chart template
-    function AreaChart(container){
-        
-}
+    const areaChart = AreaChart(".areaChart");
+    areaChart.update(data);
+
+    const stackedAreaChart = StackedAreaChart(".stackedAreaChart");
+    stackedAreaChart.update(data);
+
+    areaChart.on("brushed", (range)=>{
+        stackedAreaChart.filterByDate(range); // coordinating with stackedAreaChart
+    })
 }
 
 main();
