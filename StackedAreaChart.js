@@ -19,6 +19,13 @@ export default function StackedAreaChart(container){
     const color = d3.scaleOrdinal()
                     .range(d3.schemeSet3);
 
+    svg.append("g")
+        .attr("class", "x-axis")
+        .attr("transform", `translate(0, ${height})`);
+
+    svg.append("g")
+        .attr("class", "y-axis");
+
     const tooltip = svg.append("text")
                         .attr("class", "y-axis-title")
                         .attr('x', -15)
@@ -64,12 +71,13 @@ export default function StackedAreaChart(container){
             .y0(d => yScale(d[0]));
 
         const areas = svg.selectAll(".area")
-                        .data(series);
+                        .data(series, d => d.key);
 
         areas.enter()
             .append("path")
             .attr('stroke', "black")
             .attr("clip-path", "url(#clip)")
+            .attr("class", "area")
             .attr("fill", function(d){
                 return color(d.key)
             })

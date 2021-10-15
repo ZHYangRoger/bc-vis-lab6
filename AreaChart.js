@@ -24,13 +24,20 @@ export default function AreaChart(container){
     const brush = d3
                 .brushX()
                 .extent( [ [0,0], [width,height] ] )
-                .on("end", brushed);
+                .on("brush", brushed)
+                .on("end", brushend);
 
     svg.append("g").attr('class', 'brush').call(brush);
 
     function brushed(event) {
         if (event.selection) {
             listeners["brushed"](event.selection.map(xScale.invert));
+        }
+    }
+
+    function brushend(event){
+        if (!event.selection){
+            svg.select(".brush").call(brush.move, xScale.range());
         }
     }
 
